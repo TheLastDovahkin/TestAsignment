@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestAsignment.Models.Base;
 
 namespace TestAsignment.Models
 {
-    public class Document
+    public class Document : BaseModel
     {
         public Guid CarId { get; set; }
         public Guid WorkerId { get; set; }
