@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,6 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TestAsignment.Database;
+using TestAsignment.Models;
+using TestAsignment.Repositories;
+using TestAsignment.Repositories.Interfaces;
+using TestAsignment.Services.Interface;
 
 namespace TestAsignment
 {
@@ -26,12 +32,15 @@ namespace TestAsignment
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string connection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddMvc();
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(connection));
 
-            services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TestAsignment", Version = "v1" });
-            });
+            services.AddTransient<IRepairService, RepairService>();
+            services.AddTransient<IBaseRepository<Document>, BaseRepository<Document>>();
+            services.AddTransient<IBaseRepository<Car>, BaseRepository<Car>>();
+            services.AddTransient<IBaseRepository<Worker>, BaseRepository <Worker>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
